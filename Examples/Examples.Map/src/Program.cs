@@ -55,11 +55,11 @@ namespace Examples.Map
                     var index = itemTypeInfo.ItemsOffset + i;
                     var layerCommon = dataFile.GetItem<MapItemLayer>(index);
                     Console.WriteLine(
-                        $"[{layerCommon.Info.Id}] MapItemLayer Version: {layerCommon.Item.ItemVersion}\n" +
-                        $"[{layerCommon.Info.Id}] MapItemLayer Type: {layerCommon.Item.ItemType}\n" +
-                        $"[{layerCommon.Info.Id}] MapItemLayer Flags: {layerCommon.Item.ItemFlags}");
+                        $"[{layerCommon.Info.Id}] MapItemLayer Version: {layerCommon.Item.Version}\n" +
+                        $"[{layerCommon.Info.Id}] MapItemLayer Type: {layerCommon.Item.Type}\n" +
+                        $"[{layerCommon.Info.Id}] MapItemLayer Flags: {layerCommon.Item.Flags}");
                     
-                    switch (layerCommon.Item.ItemType)
+                    switch (layerCommon.Item.Type)
                     {
                         case (int) LayerType.Tiles:
                         {
