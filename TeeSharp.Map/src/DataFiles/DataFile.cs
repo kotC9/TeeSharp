@@ -135,20 +135,19 @@ namespace TeeSharp.Map
             var dataSize = index == Header.RawDataBlocks - 1
                 ? Header.RawDataBlocksSize - DataOffsets[index]
                 : DataOffsets[index + 1] - DataOffsets[index];
+
+            using var outMemoryStream = new MemoryStream();
+            using var outputZipStream = new ZOutputStream(outMemoryStream);
             
-            using (var outMemoryStream = new MemoryStream())
-            using (var outputZipStream = new ZOutputStream(outMemoryStream))
-            {
-                var buffer = new Span<byte>(new byte[dataSize]);
+            var buffer = new Span<byte>(new byte[dataSize]);
 
-                Stream.Seek(DataStartOffset + DataOffsets[index], SeekOrigin.Begin);
-                Stream.Read(buffer);
+            Stream.Seek(DataStartOffset + DataOffsets[index], SeekOrigin.Begin);
+            Stream.Read(buffer);
 
-                outputZipStream.Write(buffer);
-                outputZipStream.finish();
+            outputZipStream.Write(buffer);
+            outputZipStream.finish();
 
-                return outMemoryStream.ToArray();
-            }
+            return outMemoryStream.ToArray();
         }
     }
 }

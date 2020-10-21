@@ -17,7 +17,7 @@ namespace TeeSharp.Map
         public int Height;
         private int _external;
         public int DataIndexName;
-        public int DateIndexImage;
+        public int DataIndexImage;
         public int Format;
     }
 }

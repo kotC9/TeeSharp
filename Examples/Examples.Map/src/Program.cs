@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using TeeSharp.Map;
+using Color = System.Drawing.Color;
 
 namespace Examples.Map
 {
@@ -31,6 +32,7 @@ namespace Examples.Map
                         ShowInfo(dataFile);
                         ShowEnvelopes(dataFile);
                         ShowGroups(dataFile);
+                        ShowLayers(dataFile);
                     }
                     else
                     {
@@ -42,10 +44,65 @@ namespace Examples.Map
             Console.ReadKey();
         }
 
+        private static void ShowLayers(DataFile dataFile)
+        {
+            if (dataFile.HasItemType((int) MapItemType.Layer))
+            {
+                var itemTypeInfo = dataFile.GetItemType((int) MapItemType.Layer);
+
+                for(var i = 0; i < itemTypeInfo.ItemsCount; i++)
+                {
+                    var index = itemTypeInfo.ItemsOffset + i;
+                    var layerCommon = dataFile.GetItem<MapItemLayer>(index);
+                    Console.WriteLine(
+                        $"[{layerCommon.Info.Id}] MapItemLayer Version: {layerCommon.Item.Layer.Version}\n" +
+                        $"[{layerCommon.Info.Id}] MapItemLayer Type: {layerCommon.Item.Layer.Type}\n" +
+                        $"[{layerCommon.Info.Id}] MapItemLayer Flags: {layerCommon.Item.Layer.Flags}");
+                    
+                    switch (layerCommon.Item.Layer.Type)
+                    {
+                        case (int) LayerType.Tiles:
+                        {
+                            var layer = dataFile.GetItem<MapItemLayerTilemap>(index);
+                            Console.WriteLine(
+                                $"[{layer.Info.Id}] MapItemLayerTilemap Version: {layer.Item.Version}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerTilemap Flags: {layer.Item.Flags}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerTilemap Width: {layer.Item.Width}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerTilemap Height: {layer.Item.Height}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerTilemap ColorEnv: {layer.Item.ColorEnv}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerTilemap ColorEnvOffset: {layer.Item.ColorEnvOffset}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerTilemap Image: {layer.Item.Image}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerTilemap Data: {layer.Item.Data}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerTilemap Name: {layer.Item.Name}\n" +
+                                $"[{layer.Info.Id}] Color R: {layer.Item.Color.R}\n" +
+                                $"[{layer.Info.Id}] Color G: {layer.Item.Color.G}\n" +
+                                $"[{layer.Info.Id}] Color B: {layer.Item.Color.B}\n" +
+                                $"[{layer.Info.Id}] Color A: {layer.Item.Color.A}\n" +
+                                "--------------------------------------");
+                            break;
+                        }
+                        case (int) LayerType.Quads:
+                        {
+                            var layer = dataFile.GetItem<MapItemLayerQuads>(index);
+                            Console.WriteLine(
+                                $"[{layer.Info.Id}] MapItemLayerQuads Version: {layer.Item.Version}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerQuads NumQuads: {layer.Item.NumQuads}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerQuads Data: {layer.Item.Data}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerQuads Image: {layer.Item.Image}\n" +
+                                $"[{layer.Info.Id}] MapItemLayerQuads Name: {layer.Item.Name}\n" +
+                                "--------------------------------------");
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         private static void ShowGroups(DataFile dataFile)
         {
             if (dataFile.HasItemType((int) MapItemType.Group))
             {
+                
                 foreach (var group in dataFile.GetItems<MapItemGroup>((int) MapItemType.Group))
                 {
                     Console.WriteLine($"[{group.Info.Id}] MapItemGroup version: {group.Item.ItemVersion}");
@@ -77,7 +134,8 @@ namespace Examples.Map
                     Console.WriteLine($"[{envelope.Info.Id}] MapItemEnvelope StartPoint: {envelope.Item.StartPoint}");
                     Console.WriteLine($"[{envelope.Info.Id}] MapItemEnvelope PointsCount: {envelope.Item.PointsCount}");
                     Console.WriteLine($"[{envelope.Info.Id}] MapItemEnvelope PointsCount: {envelope.Item.Name}");
-                    Console.WriteLine($"[{envelope.Info.Id}] MapItemEnvelope IsSynchronized: {envelope.Item.IsSynchronized}");
+                    Console.WriteLine(
+                        $"[{envelope.Info.Id}] MapItemEnvelope IsSynchronized: {envelope.Item.IsSynchronized}");
                     Console.WriteLine("--------------------------------------");
                 }
             }
@@ -114,7 +172,7 @@ namespace Examples.Map
                         var license = dataFile.GetDataAsString(mapInfo.Item.DataIndexLicense);
                         Console.WriteLine($"[{mapInfo.Info.Id}] MapItemInfo license: {license}");
                     }
-                    
+
                     Console.WriteLine("--------------------------------------");
                 }
             }
@@ -123,7 +181,7 @@ namespace Examples.Map
         private static void ShowImages(DataFile dataFile)
         {
             Directory.CreateDirectory("images");
-            
+
             if (dataFile.HasItemType((int) MapItemType.Image))
             {
                 foreach (var mapImage in dataFile.GetItems<MapItemImage>((int) MapItemType.Image))
@@ -134,10 +192,10 @@ namespace Examples.Map
 
                     if (!mapImage.Item.IsExternal)
                     {
-                        var data = dataFile.GetDataAsRaw(mapImage.Item.DateIndexImage);
+                        var data = dataFile.GetDataAsRaw(mapImage.Item.DataIndexImage);
                         var picture = PictureFromArgb(mapImage.Item.Width, mapImage.Item.Height, data);
                         var path = Path.Combine(Environment.CurrentDirectory, "images", $"{imageName}.png");
-                        
+
                         picture.Save(path, ImageFormat.Png);
                     }
                 }
@@ -152,18 +210,18 @@ namespace Examples.Map
                     {
                         var position = (y * width + x) * 4;
                         var color = Color.FromArgb(
-                            data[position + 3], 
-                            data[position + 0], 
-                            data[position + 1], 
+                            data[position + 3],
+                            data[position + 0],
+                            data[position + 1],
                             data[position + 2]
                         );
-                        
+
                         image.SetPixel(x, y, color);
                     }
                 }
 
                 return image;
-            } 
+            }
         }
 
         private static void ShowVersion(DataFile dataFile)
