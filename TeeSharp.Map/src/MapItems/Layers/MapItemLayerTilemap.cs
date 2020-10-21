@@ -7,6 +7,7 @@ namespace TeeSharp.Map
     public struct MapItemLayerTilemap : IDataFileItem
     {
         public const int CurrentVersion = 3;
+
         public unsafe Span<int> NameBuffer
             => new Span<int>(Unsafe.AsPointer(ref _nameData[0]), 3);
 

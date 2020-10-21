@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using TeeSharp.Map;
 using Color = System.Drawing.Color;
@@ -33,6 +34,7 @@ namespace Examples.Map
                         ShowEnvelopes(dataFile);
                         ShowGroups(dataFile);
                         ShowLayers(dataFile);
+                        ShowEnvelopePoints(dataFile);
                     }
                     else
                     {
@@ -42,6 +44,24 @@ namespace Examples.Map
             }
 
             Console.ReadKey();
+        }
+
+        private static void ShowEnvelopePoints(DataFile dataFile)
+        {
+            if (dataFile.HasItemType((int) MapItemType.EnvelopePoints))
+            {
+                foreach (var point in dataFile.GetItems<MapItemEnvelopePoint>((int) MapItemType.EnvelopePoints))
+                {
+                    Console.WriteLine(
+                        $"[{point.Info.Id}] MapItemEnvelopePoint Time: {point.Item.Time}\n" +
+                        $"[{point.Info.Id}] MapItemEnvelopePoint Curvetype: {point.Item.Curvetype}\n" +
+                        $"[{point.Info.Id}] MapItemEnvelopePoint Values[0]: {point.Item.ValuesBuffer[0]}\n" +
+                        $"[{point.Info.Id}] MapItemEnvelopePoint Values[1]: {point.Item.ValuesBuffer[1]}\n" +
+                        $"[{point.Info.Id}] MapItemEnvelopePoint Values[2]: {point.Item.ValuesBuffer[2]}\n" +
+                        $"[{point.Info.Id}] MapItemEnvelopePoint Values[3]: {point.Item.ValuesBuffer[3]}\n" +
+                        $"--------------------------------------");
+                }
+            }
         }
 
         private static void ShowLayers(DataFile dataFile)
@@ -102,7 +122,6 @@ namespace Examples.Map
         {
             if (dataFile.HasItemType((int) MapItemType.Group))
             {
-                
                 foreach (var group in dataFile.GetItems<MapItemGroup>((int) MapItemType.Group))
                 {
                     Console.WriteLine($"[{group.Info.Id}] MapItemGroup version: {group.Item.ItemVersion}");
