@@ -55,11 +55,11 @@ namespace Examples.Map
                     var index = itemTypeInfo.ItemsOffset + i;
                     var layerCommon = dataFile.GetItem<MapItemLayer>(index);
                     Console.WriteLine(
-                        $"[{layerCommon.Info.Id}] MapItemLayer Version: {layerCommon.Item.Layer.Version}\n" +
-                        $"[{layerCommon.Info.Id}] MapItemLayer Type: {layerCommon.Item.Layer.Type}\n" +
-                        $"[{layerCommon.Info.Id}] MapItemLayer Flags: {layerCommon.Item.Layer.Flags}");
+                        $"[{layerCommon.Info.Id}] MapItemLayer Version: {layerCommon.Item.ItemVersion}\n" +
+                        $"[{layerCommon.Info.Id}] MapItemLayer Type: {layerCommon.Item.ItemType}\n" +
+                        $"[{layerCommon.Info.Id}] MapItemLayer Flags: {layerCommon.Item.ItemFlags}");
                     
-                    switch (layerCommon.Item.Layer.Type)
+                    switch (layerCommon.Item.ItemType)
                     {
                         case (int) LayerType.Tiles:
                         {
@@ -74,10 +74,10 @@ namespace Examples.Map
                                 $"[{layer.Info.Id}] MapItemLayerTilemap Image: {layer.Item.Image}\n" +
                                 $"[{layer.Info.Id}] MapItemLayerTilemap Data: {layer.Item.Data}\n" +
                                 $"[{layer.Info.Id}] MapItemLayerTilemap Name: {layer.Item.Name}\n" +
-                                $"[{layer.Info.Id}] Color R: {layer.Item.Color.R}\n" +
-                                $"[{layer.Info.Id}] Color G: {layer.Item.Color.G}\n" +
-                                $"[{layer.Info.Id}] Color B: {layer.Item.Color.B}\n" +
-                                $"[{layer.Info.Id}] Color A: {layer.Item.Color.A}\n" +
+                                $"[{layer.Info.Id}] Color R: {layer.Item.ColorR}\n" +
+                                $"[{layer.Info.Id}] Color G: {layer.Item.ColorG}\n" +
+                                $"[{layer.Info.Id}] Color B: {layer.Item.ColorB}\n" +
+                                $"[{layer.Info.Id}] Color A: {layer.Item.ColorA}\n" +
                                 "--------------------------------------");
                             break;
                         }

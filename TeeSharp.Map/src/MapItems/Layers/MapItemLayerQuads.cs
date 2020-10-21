@@ -6,6 +6,8 @@ namespace TeeSharp.Map
 {
     public struct MapItemLayerQuads : IDataFileItem
     {
+        public const int CurrentVersion = 2;
+        
         public unsafe Span<int> NameBuffer
             => new Span<int>(Unsafe.AsPointer(ref _nameData[0]), 3);
 
@@ -15,7 +17,11 @@ namespace TeeSharp.Map
             set => NameBuffer.PutString(value);
         }
         
-        public Layer Layer;
+        //layer
+        public int ItemVersion;
+        public int ItemType;
+        public int ItemFlags;
+        
         public int Version;
         
         public int NumQuads;

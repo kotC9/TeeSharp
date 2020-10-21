@@ -2,7 +2,8 @@ namespace TeeSharp.Map
 {
     public struct MapItemLayer : IDataFileItem
     {
-        public Layer Layer;
-        public int Version;
+        public int ItemVersion;
+        public int ItemType;
+        public int ItemFlags;
     }
 }
